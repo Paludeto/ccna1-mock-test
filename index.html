@@ -6,13 +6,14 @@
 <title>CCNA 1 v7 — Simulado Final (ITN)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'');if(t==='dark')document.documentElement.dataset.theme='dark';})();</script>
 <style>
 :root{
-  --bg:#EDF0F5; --card:#FFFFFF; --ink:#16243B; --muted:#5B6B85; --line:#D7DEEA;
-  --blue:#155EEF; --blue-soft:#E8EFFF;
-  --up:#1F9D55; --up-soft:#E5F6EC;
+  --bg:#F2F5F7; --card:#FFFFFF; --ink:#1B2A47; --muted:#607080; --line:#CDD5E0;
+  --blue:#39D353; --blue-soft:#E4FAE9;
+  --up:#39D353; --up-soft:#E4FAE9;
   --down:#D7263D; --down-soft:#FCE9EC;
-  --amber:#B7791F; --amber-soft:#FBF1DD;
+  --amber:#E8830A; --amber-soft:#FDF0DC;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --disp:'Space Grotesk','Inter',system-ui,sans-serif;
 }
@@ -21,15 +22,16 @@ html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font:16px/1.55 'Inter',system-ui,sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:16px 14px 90px}
 header.top{display:flex;align-items:center;gap:10px;padding:14px 2px}
-.logo{font-family:var(--mono);font-weight:600;font-size:13px;background:var(--ink);color:#9FE8C2;padding:6px 10px;border-radius:6px;letter-spacing:.5px}
-.logo::before{content:'>'; color:#5BE49B;margin-right:6px}
+.logo{font-family:var(--mono);font-weight:600;font-size:13px;background:#1B2A47;color:#39D353;padding:6px 10px;border-radius:6px;letter-spacing:.5px}
+.logo::before{content:'>'; color:#39D353;margin-right:6px}
 h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .sub{color:var(--muted);font-size:13px;margin-top:2px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px;box-shadow:0 1px 2px rgba(22,36,59,.05)}
 .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 @media(max-width:620px){.mode-grid{grid-template-columns:1fr}}
-.mode{cursor:pointer;border:1.5px solid var(--line);border-radius:14px;padding:18px;background:var(--card);transition:border-color .15s, transform .1s;text-align:left}
+.mode{cursor:pointer;border:1.5px solid var(--line);border-radius:14px;padding:18px;background:var(--card);color:var(--ink);transition:border-color .15s, transform .1s;text-align:left}
 .mode:hover{border-color:var(--blue)}
+.mode.sel{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-soft)}
 .mode:active{transform:scale(.99)}
 .mode h2{font-family:var(--disp);font-size:18px;margin:0 0 6px}
 .mode p{margin:0;color:var(--muted);font-size:14px}
@@ -38,11 +40,12 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .tag.g{background:var(--up-soft);color:var(--up)}
 .opts{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;font-size:14px}
 .opts label{display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--ink)}
+.opts label.hidden{display:none}
 .opts input{width:17px;height:17px;accent-color:var(--blue)}
 /* ---- patch panel ---- */
 .panel{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
-.port{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--line);background:#F4F6FA;cursor:pointer;font-family:var(--mono);font-size:0;position:relative}
-.port::after{content:'';position:absolute;inset:5px;border-radius:3px;background:#C9D2E1}
+.port{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--line);background:#EBF0F5;cursor:pointer;font-family:var(--mono);font-size:0;position:relative}
+.port::after{content:'';position:absolute;inset:5px;border-radius:3px;background:#B8C5D4}
 .port.cur{border-color:var(--ink)}
 .port.ans::after{background:var(--blue)}
 .port.ok::after{background:var(--up)}
@@ -55,14 +58,14 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .timer.low{background:var(--down)}
 .qtext{font-size:17px;font-weight:600;line-height:1.5;margin:14px 0 4px;white-space:pre-line}
 .choose-hint{font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:600;margin-bottom:8px}
-.exhibit{margin:12px 0;border:1px dashed var(--line);border-radius:10px;padding:10px;background:#FAFBFD;text-align:center}
+.exhibit{margin:12px 0;border:1px dashed var(--line);border-radius:10px;padding:10px;background:var(--bg);text-align:center}
 .exhibit img{max-width:100%;border-radius:6px}
 .exhibit .fb{display:none;color:var(--muted);font-size:13px;font-family:var(--mono)}
 .exhibit a{color:var(--blue);font-size:12px;font-family:var(--mono)}
 .optlist{display:flex;flex-direction:column;gap:9px;margin-top:14px}
 .opt{display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;cursor:pointer;background:var(--card);font-size:15px;transition:border-color .12s,background .12s}
-.opt:hover{border-color:#A9B7CE}
-.opt .mark{flex:0 0 20px;height:20px;margin-top:1px;border:2px solid #B6C2D6;border-radius:50%;position:relative}
+.opt:hover{border-color:#8FAFC4}
+.opt .mark{flex:0 0 20px;height:20px;margin-top:1px;border:2px solid #A8BCCF;border-radius:50%;position:relative}
 .opt.multi .mark{border-radius:5px}
 .opt.sel{border-color:var(--blue);background:var(--blue-soft)}
 .opt.sel .mark{border-color:var(--blue)}
@@ -74,15 +77,15 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .opt.wrong .mark{border-color:var(--down)}
 .opt.wrong .mark::after{content:'';position:absolute;inset:3px;background:var(--down);border-radius:inherit}
 .opt.dim{opacity:.55}
-.opt code,.qtext code{font-family:var(--mono);font-size:.92em;background:#EFF2F8;padding:1px 5px;border-radius:4px}
+.opt code,.qtext code{font-family:var(--mono);font-size:.92em;background:#E8EEF5;padding:1px 5px;border-radius:4px}
 /* ---- matching ---- */
-.bank{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;padding:12px;border:1.5px dashed var(--line);border-radius:11px;background:#FAFBFD;min-height:52px}
-.chip{font-family:var(--mono);font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;border:1.5px solid var(--ink);background:#fff;cursor:pointer;user-select:none}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;padding:12px;border:1.5px dashed var(--line);border-radius:11px;background:#F5F9FC;min-height:52px}
+.chip{font-family:var(--mono);font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer;user-select:none}
 .chip.picked{background:var(--ink);color:#fff}
 .bank-label{font-family:var(--mono);font-size:11px;color:var(--muted);width:100%;margin:-2px 0 2px}
 .mrow{display:flex;gap:10px;align-items:stretch;margin-top:9px;flex-wrap:wrap}
 .mdesc{flex:1 1 260px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;background:var(--card)}
-.mslot{flex:1 1 150px;min-height:44px;border:1.5px dashed #A9B7CE;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#F4F6FA;font-family:var(--mono);font-size:13px;color:#8895AB;padding:4px}
+.mslot{flex:1 1 150px;min-height:44px;border:1.5px dashed #8FAFC4;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#EBF0F5;font-family:var(--mono);font-size:13px;color:#7A8FA0;padding:4px}
 .mslot.hot{border-color:var(--blue);background:var(--blue-soft)}
 .mslot .chip{border:none;background:var(--ink);color:#fff;width:100%;text-align:center}
 .mslot.ok{border:1.5px solid var(--up);background:var(--up-soft)}
@@ -91,7 +94,7 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .crow{border:1px solid var(--line);border-radius:11px;padding:12px;margin-top:9px;background:var(--card)}
 .crow .it{font-size:14.5px;margin-bottom:9px}
 .cbtns{display:flex;gap:8px;flex-wrap:wrap}
-.cbtn{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer;color:var(--ink)}
+.cbtn{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;color:var(--ink)}
 .cbtn.sel{background:var(--ink);border-color:var(--ink);color:#fff}
 .crow.ok{border-color:var(--up);background:var(--up-soft)}
 .crow.bad{border-color:var(--down);background:var(--down-soft)}
@@ -102,13 +105,13 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .led{width:12px;height:12px;border-radius:3px}
 .verdict.ok .led{background:var(--up);box-shadow:0 0 8px var(--up)}
 .verdict.bad .led{background:var(--down);box-shadow:0 0 8px var(--down)}
-.explain{margin-top:10px;border-left:3px solid var(--blue);background:var(--blue-soft);border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;color:#23375C}
+.explain{margin-top:10px;border-left:3px solid var(--blue);background:var(--blue-soft);border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;color:#0A3D52}
 .explain b{font-family:var(--mono);font-size:12px;display:block;margin-bottom:4px;color:var(--blue)}
 /* ---- buttons / bars ---- */
 .btnbar{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .btn{font-family:var(--disp);font-weight:700;font-size:15px;border:none;border-radius:10px;padding:13px 22px;cursor:pointer}
 .btn.primary{background:var(--blue);color:#fff}
-.btn.primary:disabled{background:#B9C6E0;cursor:not-allowed}
+.btn.primary:disabled{background:#A8E8B8;cursor:not-allowed}
 .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 .btn.danger{background:var(--down);color:#fff}
 .spacer{flex:1}
@@ -127,20 +130,72 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .rev-item.ok .led{background:var(--up)} .rev-item.bad .led{background:var(--down)}
 .rev-item .t{font-size:14px}
 .rev-item .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+/* ---- flag for review ---- */
+.qhead-right{display:flex;align-items:center;gap:8px}
+.flagbtn{font-family:var(--mono);font-size:12px;font-weight:600;padding:6px 11px;border-radius:7px;border:1.5px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap}
+.flagbtn:hover{border-color:var(--amber)}
+.flagbtn.on{border-color:var(--amber);background:var(--amber-soft);color:var(--amber)}
+.port.flag::before{content:'';position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:2px;background:var(--amber);box-shadow:0 0 0 1.5px var(--card);z-index:1}
+/* ---- error bank ---- */
+.bank-desc{color:var(--muted);font-size:14px;margin:8px 0 0}
+.bank-desc b{color:var(--ink);font-family:var(--mono)}
+/* ---- review with filters ---- */
+.revfilters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 2px}
+.rf{font-family:var(--mono);font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.rf:hover{border-color:#8FAFC4}
+.rf.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.rev-item{display:block;cursor:default}
+.rev-head{display:flex;gap:10px;align-items:baseline}
+.rev-item.blank .led{background:var(--amber)}
+.rev-item.flagged{box-shadow:inset 3px 0 0 var(--amber)}
+.rev-flag{color:var(--amber);font-family:var(--mono)}
+.rev-detail{margin-top:9px;padding-left:20px}
+.rev-detail .ans{font-family:var(--mono);font-size:12.5px;margin-top:3px;color:var(--muted);word-break:break-word}
+.rev-detail .ans .lab{color:var(--muted)}
+.rev-detail .ans.you{color:var(--down)}
+.rev-detail .ans.you.ok{color:var(--up)}
+.rev-detail .ans.cor{color:var(--up)}
+.rev-explain{margin-top:9px;border-left:3px solid var(--blue);background:var(--blue-soft);border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;color:#0A3D52}
+.rev-explain b{font-family:var(--mono);font-size:11px;display:block;margin-bottom:3px;color:var(--blue)}
+.rev-open{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--blue);cursor:pointer;text-decoration:underline}
 .hidden{display:none}
 footer{color:var(--muted);font-size:12px;text-align:center;margin-top:30px;font-family:var(--mono)}
 footer a{color:var(--muted)}
 @media(max-width:480px){.qtext{font-size:16px}.btn{flex:1}}
+/* ---- theme toggle button ---- */
+.theme-btn{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px;line-height:1;margin-left:auto;flex-shrink:0}
+/* ---- dark mode ---- */
+[data-theme="dark"]{
+  --bg:#0F1117; --card:#1C1F26; --ink:#DDE4ED; --muted:#96A6B8; --line:#363D4E;
+  --blue:#39D353; --blue-soft:#1A3526;
+  --up:#39D353; --up-soft:#1A3526;
+  --down:#F0445A; --down-soft:#2A1218;
+  --amber:#F5A623; --amber-soft:#261C08;
+}
+[data-theme="dark"] .card{box-shadow:0 1px 4px rgba(0,0,0,.4)}
+[data-theme="dark"] .mode.sel{box-shadow:0 0 0 2px #39D353}
+[data-theme="dark"] .btn.primary:disabled{background:#1E4028;color:#4A7A5A}
+[data-theme="dark"] .port{background:#252B36}
+[data-theme="dark"] .port::after{background:#3A4355}
+[data-theme="dark"] .bank,[data-theme="dark"] .exhibit{background:#161A22}
+[data-theme="dark"] .mslot{background:#1E242E;color:#5A6A7A}
+[data-theme="dark"] .chip.picked{background:#DDE4ED;color:#0F1117;border-color:#DDE4ED}
+[data-theme="dark"] .mslot .chip{background:#DDE4ED;color:#0F1117}
+[data-theme="dark"] .cbtn.sel{background:#DDE4ED;border-color:#DDE4ED;color:#0F1117}
+[data-theme="dark"] .rf.on{background:#DDE4ED;border-color:#DDE4ED;color:#0F1117}
+[data-theme="dark"] .timer{background:#2D3340}
+[data-theme="dark"] .opt code,[data-theme="dark"] .qtext code{background:#252B36}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="logo">CCNA1#</div>
-    <div>
+    <div style="flex:1">
       <h1>Simulado — Exame Final ITNv7</h1>
       <div class="sub">Introduction to Networks · 158 questões · aprovação ≥ 70%</div>
     </div>
+    <button class="theme-btn" id="btn-theme" title="Alternar tema">🌙</button>
   </header>
 
   <!-- START -->
@@ -154,20 +209,31 @@ footer a{color:var(--muted)}
       <button class="mode" id="btn-exam">
         <span class="tag b">SIMULADO</span>
         <h2>Simulado Real</h2>
-        <p>60 questões aleatórias, 1h15 de cronômetro, correção apenas no final — como no exame oficial.</p>
+        <p>120 questões aleatórias, 1h40 de cronômetro, correção apenas no final — como no exame oficial.</p>
       </button>
     </div>
     <div class="card">
-      <div class="opts">
-        <label><input type="checkbox" id="opt-shufq" checked> <span id="lbl-shufq">Embaralhar questões</span></label>
-        <label><input type="checkbox" id="opt-shufo" checked> <span id="lbl-shufo">Embaralhar alternativas</span></label>
-        <label><input type="checkbox" id="opt-sixty"> <span id="lbl-sixty">Prática: apenas 60 aleatórias</span></label>
-        <label style="display:flex;align-items:center;gap:6px;margin-left:auto;">Idioma: 
-          <select id="opt-lang" style="font-family:var(--disp);padding:4px 8px;border-radius:6px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:600;cursor:pointer;">
-            <option value="pt">Português</option>
-            <option value="en">Inglês</option>
-          </select>
-        </label>
+      <div id="practice-opts" class="opts">
+        <label>Questões: <input type="number" id="opt-count" min="1" value="158" style="width:70px;font-family:var(--mono);padding:4px 8px;border-radius:6px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;text-align:center"> <span id="count-avail" style="color:var(--muted);font-size:13px"></span></label>
+      </div>
+      <div class="btnbar" style="margin-top:14px">
+        <button class="btn primary" id="btn-start">Iniciar prática →</button>
+      </div>
+    </div>
+    <div class="card" id="bank-card">
+      <div class="qnum">BANCO DE ERROS</div>
+      <p class="bank-desc" id="bank-desc"></p>
+      <div class="btnbar">
+        <button class="btn primary" id="btn-study-bank">Estudar erros</button>
+        <button class="btn ghost" id="btn-clear-bank">Limpar banco</button>
+      </div>
+    </div>
+    <div class="card" id="mastered-card">
+      <div class="qnum">QUESTÕES DOMINADAS</div>
+      <p class="bank-desc" id="mastered-desc"></p>
+      <div class="btnbar">
+        <button class="btn ghost" id="btn-study-mastered">Revisar dominadas</button>
+        <button class="btn ghost" id="btn-reset-mastered">Resetar progresso</button>
       </div>
     </div>
   </section>
@@ -177,7 +243,10 @@ footer a{color:var(--muted)}
     <div class="card">
       <div class="qhead">
         <span class="qnum">QUESTÃO <b id="q-pos"></b> / <span id="q-total"></span> · <span id="q-orig"></span></span>
-        <span class="timer hidden" id="timer">75:00</span>
+        <div class="qhead-right">
+          <button class="flagbtn" id="btn-flag">☆ <span id="flag-lbl">Marcar</span></button>
+          <span class="timer hidden" id="timer">100:00</span>
+        </div>
       </div>
       <div class="progress"><i id="prog"></i></div>
       <div id="q-body"></div>
@@ -215,107 +284,62 @@ footer a{color:var(--muted)}
       </div>
     </div>
     <div class="card">
-      <div class="qnum" id="lbl-rev-title">REVISÃO (toque para ver a questão corrigida)</div>
+      <div class="qnum" id="lbl-rev-title">REVISÃO</div>
+      <div class="revfilters" id="rev-filters">
+        <button class="rf on" data-f="all">Todas</button>
+        <button class="rf" data-f="wrong">Erradas</button>
+        <button class="rf" data-f="right">Acertos</button>
+        <button class="rf" data-f="flag">Marcadas</button>
+      </div>
       <div id="r-list"></div>
     </div>
   </section>
 
-  <footer>Banco de questões: ITN v7.00 Course Final · fonte <a href="https://itexamanswers.net/ccna-1-v7-0-final-exam-answers-full-introduction-to-networks.html" target="_blank">itexamanswers.net</a> · imagens das exibições carregadas do site original (requer internet)</footer>
+  <footer>Banco de questões: ITN v7.00 Course Final · fonte <a href="https://itexamanswers.net/ccna-1-v7-0-final-exam-answers-full-introduction-to-networks.html" target="_blank">itexamanswers.net</a></footer>
 </div>
 
 <script>
 'use strict';
-
-/* ===================== TRANSLATIONS ===================== */
-const UI_TEXTS = {
-  pt: {
-    title: "Simulado — Exame Final ITNv7",
-    subtitle: "Introduction to Networks · 158 questões · aprovação ≥ 70%",
-    practice_tag: "PRÁTICA",
-    practice_title: "Modo Prática",
-    practice_desc: "Feedback imediato com explicação após cada questão. Percorra todo o banco ou um subconjunto aleatório.",
-    exam_tag: "SIMULADO",
-    exam_title: "Simulado Real",
-    exam_desc: "60 questões aleatórias, 1h15 de cronômetro, correção apenas no final — como no exame oficial.",
-    opt_shufq: "Embaralhar questões",
-    opt_shufo: "Embaralhar alternativas",
-    opt_sixty: "Prática: apenas 60 aleatórias",
-    btn_prev: "← Anterior",
-    btn_check: "Confirmar",
-    btn_next: "Próxima →",
-    btn_finish: "Entregar",
-    btn_retry_wrong: "Refazer erradas",
-    btn_restart: "Início",
-    nav_title: "PAINEL DE QUESTÕES",
-    rev_title: "REVISÃO (toque para ver a questão corrigida)",
-    confirm_finish: " questão(ões) em branco. Entregar mesmo assim?",
-    btn_home: "Voltar ao Início",
-    confirm_abandon: "Deseja mesmo abandonar o simulado? Todo o progresso será perdido."
-  },
-  en: {
-    title: "Simulator — ITNv7 Final Exam",
-    subtitle: "Introduction to Networks · 158 questions · passing score ≥ 70%",
-    practice_tag: "PRACTICE",
-    practice_title: "Practice Mode",
-    practice_desc: "Immediate feedback with explanation after each question. Go through all questions or a random subset.",
-    exam_tag: "EXAM",
-    exam_title: "Real Simulator",
-    exam_desc: "60 random questions, 1h15 timer, grading only at the end — just like the official exam.",
-    opt_shufq: "Shuffle questions",
-    opt_shufo: "Shuffle options",
-    opt_sixty: "Practice: only 60 random questions",
-    btn_prev: "← Previous",
-    btn_check: "Confirm",
-    btn_next: "Next →",
-    btn_finish: "Submit",
-    btn_retry_wrong: "Retry incorrect",
-    btn_restart: "Home",
-    nav_title: "QUESTION PANEL",
-    rev_title: "REVIEW (click to view the graded question)",
-    confirm_finish: " unanswered question(s). Submit anyway?",
-    btn_home: "Back to Home",
-    confirm_abandon: "Are you sure you want to quit the simulator? All progress will be lost."
-  }
-};
-
-function updateUILanguage(lang){
-  const t = UI_TEXTS[lang];
-  $('header.top h1').textContent = t.title;
-  $('header.top .sub').textContent = t.subtitle;
-  $('#btn-practice .tag').textContent = t.practice_tag;
-  $('#btn-practice h2').textContent = t.practice_title;
-  $('#btn-practice p').textContent = t.practice_desc;
-  $('#btn-exam .tag').textContent = t.exam_tag;
-  $('#btn-exam h2').textContent = t.exam_title;
-  $('#btn-exam p').textContent = t.exam_desc;
-  
-  $('#lbl-shufq').textContent = t.opt_shufq;
-  $('#lbl-shufo').textContent = t.opt_shufo;
-  $('#lbl-sixty').textContent = t.opt_sixty;
-  
-  $('#btn-prev').textContent = t.btn_prev;
-  $('#btn-check').textContent = t.btn_check;
-  $('#btn-next').textContent = t.btn_next;
-  $('#btn-finish').textContent = t.btn_finish;
-  $('#btn-retry-wrong').textContent = t.btn_retry_wrong;
-  $('#btn-restart').textContent = t.btn_restart;
-  $('#btn-home').textContent = t.btn_home;
-  
-  $('#nav-card .qnum').textContent = t.nav_title;
-  $('#lbl-rev-title').textContent = t.rev_title;
-}
 
 /* ===================== ENGINE ===================== */
 const $=s=>document.querySelector(s);
 const IMG='https://itexamanswers.net/wp-content/uploads/';
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function setEq(a,b){return a.length===b.length&&a.slice().sort().join()===b.slice().sort().join();}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 let S=null; // session state
+let revFilter='all';
+let selMode='practice'; // start-screen mode selection
+
+/* ---------- error bank (persistent, localStorage) ---------- */
+const QBY_N={}; // populated in init(), after the QUESTIONS const is initialized
+const BANK_KEY='ccna1_errbank';
+function loadBank(){try{const v=JSON.parse(localStorage.getItem(BANK_KEY));return (v&&typeof v==='object')?v:{};}catch(e){return {};}}
+function saveBank(b){try{localStorage.setItem(BANK_KEY,JSON.stringify(b));}catch(e){}}
+function bankDeck(){return Object.keys(loadBank()).map(n=>QBY_N[n]).filter(Boolean);}
+function updateProgressFromSession(){
+  const b=loadBank(), m=loadMastered();
+  S.qs.forEach((rq,i)=>{
+    const n=String(rq.src.n);
+    if(!answered(i)&&S.mode!=='exam') return;
+    if(S.correct[i]){
+      if(n in b){b[n]=(b[n]||0)+1;if(b[n]>=2)delete b[n];}
+      m[n]=1;
+    }else{
+      b[n]=0;
+      delete m[n];
+    }
+  });
+  saveBank(b);saveMastered(m);
+}
 
 function init(){
-  $('#btn-practice').onclick=()=>startSession('practice');
-  $('#btn-exam').onclick=()=>startSession('exam');
+  QUESTIONS.forEach(q=>{QBY_N[q.n]=q;});
+  $('#btn-practice').onclick=()=>selectMode('practice');
+  $('#btn-exam').onclick=()=>selectMode('exam');
+  $('#btn-start').onclick=()=>startSession(selMode);
+  document.addEventListener('keydown',onKeydown);
   $('#btn-prev').onclick=()=>go(S.idx-1);
   $('#btn-next').onclick=()=>go(S.idx+1);
   $('#btn-check').onclick=checkCurrent;
@@ -323,57 +347,94 @@ function init(){
   $('#btn-restart').onclick=()=>{stopTimer();show('start');};
   $('#btn-retry-wrong').onclick=retryWrong;
   $('#btn-home').onclick=()=>{
-    const t = UI_TEXTS[S ? S.lang : ($('#opt-lang').value || 'pt')];
-    if (confirm(t.confirm_abandon)) {
-      stopTimer();
-      show('start');
-    }
+    if(confirm('Deseja mesmo abandonar? Todo o progresso será perdido.')){stopTimer();show('start');}
   };
-  $('#opt-lang').onchange=(e)=>updateUILanguage(e.target.value);
-  updateUILanguage($('#opt-lang').value);
+  $('#btn-flag').onclick=toggleFlag;
+  $('#btn-study-bank').onclick=studyBank;
+  $('#btn-clear-bank').onclick=clearBank;
+  $('#btn-study-mastered').onclick=studyMastered;
+  $('#btn-reset-mastered').onclick=resetMasteredConfirm;
+  $('#opt-count').oninput=updateCountLabel;
+  document.querySelectorAll('#rev-filters .rf').forEach(b=>{
+    b.onclick=()=>{
+      revFilter=b.dataset.f;
+      document.querySelectorAll('#rev-filters .rf').forEach(x=>x.classList.toggle('on',x===b));
+      renderReviewList();
+    };
+  });
+  selectMode('practice');
+}
+
+function updateCountLabel(){
+  const avail=QUESTIONS.length-masteredCount();
+  const input=$('#opt-count');
+  input.max=Math.max(1,avail);
+  if(parseInt(input.value)>avail) input.value=avail;
+  if(avail===0){input.disabled=true;}else{input.disabled=false;}
+  $('#count-avail').textContent='de '+avail+' disponíveis';
+}
+
+function selectMode(m){
+  selMode=m;
+  $('#btn-practice').classList.toggle('sel',m==='practice');
+  $('#btn-exam').classList.toggle('sel',m==='exam');
+  $('#practice-opts').classList.toggle('hidden',m!=='practice');
+  $('#btn-start').textContent=(m==='exam')?'Iniciar simulado →':'Iniciar prática →';
+  if(m==='practice') updateCountLabel();
+}
+
+function onKeydown(e){
+  if(!S) return;
+  if($('#screen-quiz').classList.contains('hidden')) return;
+  const tag=(document.activeElement&&document.activeElement.tagName)||'';
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') return;
+  if(e.key==='ArrowRight'){ e.preventDefault(); go(S.idx+1); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); go(S.idx-1); }
 }
 
 function show(name){
   $('#screen-start').classList.toggle('hidden',name!=='start');
   $('#screen-quiz').classList.toggle('hidden',name!=='quiz');
   $('#screen-results').classList.toggle('hidden',name!=='results');
+  if(name==='start'){renderBankCard();renderMasteredCard();updateCountLabel();}
   window.scrollTo({top:0});
 }
 
-function buildRuntimeQ(q,shufOpts){
+function buildRuntimeQ(q){
   const r={src:q};
   if(q.t==='s'||q.t==='m'){
-    let idx=q.o.map((_,i)=>i);
-    if(shufOpts) idx=shuffle(idx);
-    r.optOrder=idx;
+    r.optOrder=shuffle(q.o.map((_,i)=>i));
   }else if(q.t==='match'){
-    const rights=q.pairs.map(p=>p.r).concat(q.dis||[]);
-    r.bank=shuffle(rights);
-    r.rowOrder=shufOpts?shuffle(q.pairs.map((_,i)=>i)):q.pairs.map((_,i)=>i);
+    r.bank=shuffle(q.pairs.map(p=>p.r).concat(q.dis||[]));
+    r.rowOrder=shuffle(q.pairs.map((_,i)=>i));
   }else if(q.t==='classify'){
-    r.itemOrder=shufOpts?shuffle(q.items.map((_,i)=>i)):q.items.map((_,i)=>i);
+    r.itemOrder=shuffle(q.items.map((_,i)=>i));
   }
   return r;
 }
 
 function startSession(mode,fixedSet){
-  const shufQ=$('#opt-shufq').checked, shufO=$('#opt-shufo').checked;
-  let qs=fixedSet||QUESTIONS.slice();
-  if(!fixedSet){
-    if(shufQ||mode==='exam') qs=shuffle(qs);
-    if(mode==='exam') qs=qs.slice(0,60);
-    else if($('#opt-sixty').checked) qs=qs.slice(0,60);
+  let qs;
+  if(fixedSet){
+    qs=fixedSet;
+  }else if(mode==='exam'){
+    qs=shuffle(QUESTIONS.slice()).slice(0,120);
+  }else{
+    const m=loadMastered();
+    const avail=QUESTIONS.filter(q=>!m[q.n]);
+    const count=Math.min(parseInt($('#opt-count').value)||avail.length,avail.length);
+    qs=shuffle(avail).slice(0,Math.max(1,count));
   }
-  S={mode,qs:qs.map(q=>buildRuntimeQ(q,shufO)),idx:0,
+  S={mode,qs:qs.map(q=>buildRuntimeQ(q)),idx:0,
      answers:new Array(qs.length).fill(null),
      checked:new Array(qs.length).fill(false),
      correct:new Array(qs.length).fill(null),
-     startedAt:Date.now(),
-     lang:$('#opt-lang').value};
+     flagged:new Array(qs.length).fill(false),
+     startedAt:Date.now()};
   $('#q-total').textContent=qs.length;
   $('#timer').classList.toggle('hidden',mode!=='exam');
   $('#btn-finish').classList.toggle('hidden',mode!=='exam');
-  if(mode==='exam') startTimer(75*60); else stopTimer();
+  if(mode==='exam') startTimer(100*60); else stopTimer();
   buildPanel();
   show('quiz');
   go(0);
@@ -408,7 +469,7 @@ function buildPanel(){
 }
 function refreshPanel(){
   [...$('#panel').children].forEach((b,i)=>{
-    b.className='port'+(i===S.idx?' cur':'');
+    b.className='port'+(i===S.idx?' cur':'')+(S.flagged[i]?' flag':'');
     if(S.mode==='practice'&&S.checked[i]) b.classList.add(S.correct[i]?'ok':'bad');
     else if(answered(i)) b.classList.add('ans');
   });
@@ -421,6 +482,58 @@ function answered(i){
   if(q.t==='match') return a.slots&&a.slots.some(x=>x!=null);
   if(q.t==='classify') return a.cats&&a.cats.some(x=>x!=null);
   return false;
+}
+function toggleFlag(){
+  if(!S) return;
+  S.flagged[S.idx]=!S.flagged[S.idx];
+  $('#btn-flag').classList.toggle('on',S.flagged[S.idx]);
+  $('#flag-lbl').textContent=S.flagged[S.idx]?'Marcada':'Marcar';
+  refreshPanel();
+}
+
+/* ---------- error bank ---------- */
+function renderBankCard(){
+  const n=bankDeck().length;
+  const desc=$('#bank-desc');
+  if(n===0){desc.textContent='Nenhum erro registrado. Questões erradas aparecem aqui para revisão dirigida.';$('#btn-study-bank').disabled=true;}
+  else{desc.innerHTML='Você tem <b>'+n+'</b> questão(ões) pendente(s). Acerte 2 vezes seguidas para remover.';$('#btn-study-bank').disabled=false;}
+}
+function studyBank(){
+  const deck=bankDeck();
+  if(deck.length) startSession('practice',shuffle(deck));
+}
+function clearBank(){
+  if(confirm('Esvaziar o banco de erros? Esta ação não pode ser desfeita.')){saveBank({});renderBankCard();}
+}
+
+/* ---------- mastered ---------- */
+const MASTERED_KEY='ccna1_mastered';
+function loadMastered(){try{const v=JSON.parse(localStorage.getItem(MASTERED_KEY));return(v&&typeof v==='object')?v:{};}catch(e){return{};}}
+function saveMastered(m){try{localStorage.setItem(MASTERED_KEY,JSON.stringify(m));}catch(e){}}
+function masteredCount(){return Object.keys(loadMastered()).length;}
+function masteredDeck(){return Object.keys(loadMastered()).map(n=>QBY_N[n]).filter(Boolean);}
+
+function renderMasteredCard(){
+  const n=masteredCount(), total=QUESTIONS.length;
+  const desc=$('#mastered-desc');
+  if(n===0){
+    desc.textContent='Nenhuma questão dominada ainda. Acerte uma questão em prática para dominá-la.';
+    $('#btn-study-mastered').disabled=true;
+    $('#btn-reset-mastered').disabled=true;
+  }else{
+    desc.innerHTML='<b>'+n+'</b> de <b>'+total+'</b> questões dominadas. Errar uma questão a retira daqui.';
+    $('#btn-study-mastered').disabled=false;
+    $('#btn-reset-mastered').disabled=false;
+  }
+}
+function studyMastered(){
+  const deck=masteredDeck();
+  if(deck.length) startSession('practice',shuffle(deck));
+}
+function resetMasteredConfirm(){
+  if(confirm('Resetar todas as questões dominadas? O banco de erros não é afetado.')){
+    saveMastered({});renderMasteredCard();updateCountLabel();
+  }
 }
 
 /* ---------- navigation / render ---------- */
@@ -436,6 +549,8 @@ function renderQ(){
   const rq=S.qs[S.idx], q=rq.src, locked=S.mode==='practice'&&S.checked[S.idx];
   $('#q-pos').textContent=S.idx+1;
   $('#q-orig').textContent='#'+q.n;
+  $('#btn-flag').classList.toggle('on',!!S.flagged[S.idx]);
+  $('#flag-lbl').textContent=S.flagged[S.idx]?'Marcada':'Marcar';
   $('#prog').style.width=((S.idx+1)/S.qs.length*100)+'%';
   $('#btn-prev').disabled=S.idx===0;
   const last=S.idx===S.qs.length-1;
@@ -445,34 +560,25 @@ function renderQ(){
   }else{
     $('#btn-check').classList.toggle('hidden',locked);
     $('#btn-next').classList.toggle('hidden',!locked);
-    if(S.lang === 'pt'){
-      $('#btn-next').textContent=last?'Ver resultado →':'Próxima →';
-      $('#btn-prev').textContent='← Anterior';
-    } else {
-      $('#btn-next').textContent=last?'View results →':'Next →';
-      $('#btn-prev').textContent='← Previous';
-    }
+    $('#btn-next').textContent=last?'Ver resultado →':'Próxima →';
+    $('#btn-prev').textContent='← Anterior';
   }
   const body=$('#q-body'); body.innerHTML='';
   if(q.choose){
     const h=document.createElement('div');h.className='choose-hint';
-    if(S.lang === 'pt'){
-      h.textContent='ESCOLHA '+q.choose+(q.choose>1?' ALTERNATIVAS':' ALTERNATIVA');
-    }else{
-      h.textContent='CHOOSE '+q.choose+(q.choose>1?' OPTIONS':' OPTION');
-    }
+    h.textContent='ESCOLHA '+q.choose+(q.choose>1?' ALTERNATIVAS':' ALTERNATIVA');
     body.appendChild(h);
   }
   const qt=document.createElement('div');qt.className='qtext';
-  qt.textContent=(S.lang === 'pt' && q.q_pt) ? q.q_pt : q.q;
+  qt.textContent=q.q_pt||q.q;
   body.appendChild(qt);
   if(q.img){
-    const localSrc = q.img.startsWith('imagens_simulado/') ? './' + q.img : './imagens_simulado/' + q.img.split('/').pop();
-    const externalSrc = IMG + (q.img_org || q.img);
+    const localSrc=q.img.startsWith('imagens_simulado/')?'./'+q.img:'./imagens_simulado/'+q.img.split('/').pop();
+    const externalSrc=IMG+(q.img_org||q.img);
     const ex=document.createElement('div');ex.className='exhibit';
     ex.innerHTML='<img src="'+localSrc+'" alt="Exibição da questão" loading="lazy" '+
       'onerror="if(this.src.indexOf(\'imagens_simulado\')!==-1){this.src=\''+externalSrc+'\';}else{this.style.display=\'none\';this.parentNode.querySelector(\'.fb\').style.display=\'block\';}">'+
-      '<div class="fb">'+(S.lang==='pt'?'⚠ exibição indisponível offline — ':'⚠ exhibit unavailable offline — ')+'<a href="'+externalSrc+'" target="_blank">'+(S.lang==='pt'?'abrir imagem original':'open original image')+'</a></div>';
+      '<div class="fb">⚠ exibição indisponível offline — <a href="'+externalSrc+'" target="_blank">abrir imagem original</a></div>';
     body.appendChild(ex);
   }
   if(q.t==='s'||q.t==='m') renderChoice(body,rq,locked);
@@ -498,7 +604,7 @@ function ensureAns(rq){
 function renderChoice(body,rq,locked){
   const q=rq.src,a=ensureAns(rq);
   const list=document.createElement('div');list.className='optlist';
-  const opts = (S.lang === 'pt' && q.o_pt) ? q.o_pt : q.o;
+  const opts=q.o_pt||q.o;
   rq.optOrder.forEach(oi=>{
     const d=document.createElement('div');
     d.className='opt'+(q.t==='m'?' multi':'');
@@ -531,27 +637,23 @@ let pickedChip=null;
 function renderMatch(body,rq,locked){
   const q=rq.src,a=ensureAns(rq);
   pickedChip=null;
-  const pairs = (S.lang === 'pt' && q.pairs_pt) ? q.pairs_pt : q.pairs;
-  const dis = (S.lang === 'pt' && q.dis_pt) ? q.dis_pt : q.dis;
-  const engPairs = q.pairs;
-  const engDis = q.dis;
+  const pairs=q.pairs_pt||q.pairs;
+  const dis=q.dis_pt||q.dis;
+  const engPairs=q.pairs;
+  const engDis=q.dis;
   const used=a.slots.filter(x=>x!=null);
   if(!locked){
     const bank=document.createElement('div');bank.className='bank';
-    bank.innerHTML='<div class="bank-label">'+(S.lang==='pt'?'TOQUE EM UMA FICHA E DEPOIS EM UM ALVO (nem todas as opções são usadas)':'TAP A CHIP AND THEN A TARGET (not all options are used)')+'</div>';
+    bank.innerHTML='<div class="bank-label">TOQUE EM UMA FICHA E DEPOIS EM UM ALVO (nem todas as opções são usadas)</div>';
     rq.bank.forEach(engTxt=>{
       if(used.includes(engTxt))return;
-      let showTxt = engTxt;
-      if (S.lang === 'pt') {
-        const idxInEng = engPairs.map(p=>p.r).concat(engDis||[]).indexOf(engTxt);
-        if (idxInEng !== -1) {
-          showTxt = pairs.map(p=>p.r).concat(dis||[])[idxInEng];
-        }
-      }
+      let showTxt=engTxt;
+      const idxInEng=engPairs.map(p=>p.r).concat(engDis||[]).indexOf(engTxt);
+      if(idxInEng!==-1) showTxt=pairs.map(p=>p.r).concat(dis||[])[idxInEng];
       const c=document.createElement('button');c.className='chip';c.textContent=showTxt;
       c.onclick=()=>{
         if(pickedChip===engTxt){pickedChip=null;}else{pickedChip=engTxt;}
-        [...bank.querySelectorAll('.chip')].forEach(x=>x.classList.toggle('picked',x.textContent===showTxt && pickedChip===engTxt));
+        [...bank.querySelectorAll('.chip')].forEach(x=>x.classList.toggle('picked',x.textContent===showTxt&&pickedChip===engTxt));
         [...body.querySelectorAll('.mslot')].forEach(x=>x.classList.toggle('hot',!!pickedChip));
       };
       bank.appendChild(c);
@@ -566,22 +668,18 @@ function renderMatch(body,rq,locked){
     const slot=document.createElement('div');slot.className='mslot';
     const val=a.slots[ri];
     if(val){
-      let showVal = val;
-      if (S.lang === 'pt') {
-        const idxInEng = engPairs.map(x=>x.r).concat(engDis||[]).indexOf(val);
-        if (idxInEng !== -1) {
-          showVal = pairs.map(x=>x.r).concat(dis||[])[idxInEng];
-        }
-      }
+      let showVal=val;
+      const idxInEng=engPairs.map(x=>x.r).concat(engDis||[]).indexOf(val);
+      if(idxInEng!==-1) showVal=pairs.map(x=>x.r).concat(dis||[])[idxInEng];
       const c=document.createElement('span');c.className='chip';c.textContent=showVal;slot.appendChild(c);
     }
-    else slot.textContent=S.lang==='pt'?'— soltar aqui —':'— drop here —';
+    else slot.textContent='— soltar aqui —';
     if(locked){
       slot.classList.add(val===engP.r?'ok':'bad');
       if(val!==engP.r){
         const fix=document.createElement('div');fix.className='mdesc';
         fix.style.flex='1 1 100%';fix.style.fontFamily='var(--mono)';fix.style.fontSize='12px';fix.style.color='var(--up)';
-        fix.textContent=(S.lang==='pt'?'✔ correto: ':'✔ correct: ')+p.r;row.appendChild(desc);row.appendChild(slot);row.appendChild(fix);
+        fix.textContent='✔ correto: '+p.r;row.appendChild(desc);row.appendChild(slot);row.appendChild(fix);
         body.appendChild(row);return;
       }
     }else{
@@ -598,8 +696,8 @@ function renderMatch(body,rq,locked){
 /* ---- classify (categorias) ---- */
 function renderClassify(body,rq,locked){
   const q=rq.src,a=ensureAns(rq);
-  const items = (S.lang === 'pt' && q.items_pt) ? q.items_pt : q.items;
-  const cats = (S.lang === 'pt' && q.cats_pt) ? q.cats_pt : q.cats;
+  const items=q.items_pt||q.items;
+  const cats=q.cats_pt||q.cats;
   rq.itemOrder.forEach(ii=>{
     const it=items[ii];
     const engIt=q.items[ii];
@@ -617,7 +715,7 @@ function renderClassify(body,rq,locked){
     if(locked){
       const ok=a.cats[ii]===engIt.c;
       row.classList.add(ok?'ok':'bad');
-      if(!ok){const f=document.createElement('div');f.className='fix';f.textContent=(S.lang==='pt'?'✔ correto: ':'✔ correct: ')+cats[engIt.c];row.appendChild(f);}
+      if(!ok){const f=document.createElement('div');f.className='fix';f.textContent='✔ correto: '+cats[engIt.c];row.appendChild(f);}
     }
     body.appendChild(row);
   });
@@ -645,22 +743,17 @@ function checkCurrent(){
 function showFeedback(body,rq){
   const ok=S.correct[S.idx];
   const v=document.createElement('div');v.className='verdict '+(ok?'ok':'bad');
-  if (S.lang === 'pt') {
-    v.innerHTML='<span class="led"></span>'+(ok?'Correto — link up':'Incorreto');
-  } else {
-    v.innerHTML='<span class="led"></span>'+(ok?'Correct — link up':'Incorrect');
-  }
+  v.innerHTML='<span class="led"></span>'+(ok?'Correto — link up':'Incorreto');
   body.appendChild(v);
   if(rq.src.ex){
     const e=document.createElement('div');e.className='explain';
-    e.innerHTML='<b>'+(S.lang==='pt'?'EXPLICAÇÃO':'EXPLANATION')+' · '+(rq.src.topic||'')+'</b>'+rq.src.ex;
+    e.innerHTML='<b>EXPLICAÇÃO · '+(rq.src.topic||'')+'</b>'+rq.src.ex;
     body.appendChild(e);
   }
 }
 function tryFinish(){
   const blank=S.answers.filter((a,i)=>!answered(i)).length;
-  const t = UI_TEXTS[S.lang];
-  if(blank>0&&!confirm(blank+t.confirm_finish))return;
+  if(blank>0&&!confirm(blank+' questão(ões) em branco. Entregar mesmo assim?'))return;
   finish(false);
 }
 function finish(timeUp){
@@ -671,11 +764,7 @@ function finish(timeUp){
   const pct=Math.round(ok/total*100);
   $('#r-pct').textContent=pct+'%';
   const pass=$('#r-pass');
-  if (S.lang === 'pt') {
-    pass.textContent=pct>=70?'APROVADO ✔ (mínimo 70%)':(timeUp?'TEMPO ESGOTADO — ':'')+'REPROVADO ✘ (mínimo 70%)';
-  } else {
-    pass.textContent=pct>=70?'PASSED ✔ (minimum 70%)':(timeUp?'TIME UP — ':'')+'FAILED ✘ (minimum 70%)';
-  }
+  pass.textContent=pct>=70?'APROVADO ✔ (mínimo 70%)':(timeUp?'TEMPO ESGOTADO — ':'')+'REPROVADO ✘ (mínimo 70%)';
   pass.className='pass '+(pct>=70?'yes':'no');
   $('#r-ok').textContent=ok;
   $('#r-bad').textContent=total-ok-blank;
@@ -684,26 +773,76 @@ function finish(timeUp){
   $('#r-time-wrap').classList.toggle('hidden',S.mode!=='exam');
   $('#r-time').textContent=mins+' min';
   $('#btn-retry-wrong').disabled=ok===total;
-  const list=$('#r-list');list.innerHTML='';
-  S.qs.forEach((rq,i)=>{
-    const d=document.createElement('div');
-    d.className='rev-item '+(S.correct[i]?'ok':'bad');
-    const qtext_val = (S.lang === 'pt' && rq.src.q_pt) ? rq.src.q_pt : rq.src.q;
-    d.innerHTML='<span class="led"></span><span class="t"><span class="n">Q'+(i+1)+' · #'+rq.src.n+'</span><br>'+qtext_val.split('\n')[0].slice(0,110)+'…</span>';
-    d.onclick=()=>{S.mode='practice';$('#timer').classList.add('hidden');$('#btn-finish').classList.add('hidden');show('quiz');go(i);};
-    list.appendChild(d);
-  });
-  
-  $('#r-ok-lbl').textContent = S.lang === 'pt' ? 'Acertos' : 'Correct';
-  $('#r-bad-lbl').textContent = S.lang === 'pt' ? 'Erros' : 'Incorrect';
-  $('#r-blank-lbl').textContent = S.lang === 'pt' ? 'Em branco' : 'Unanswered';
-  $('#r-time-lbl').textContent = S.lang === 'pt' ? 'Tempo' : 'Time';
-  
+  updateProgressFromSession();
+  revFilter='all';
+  document.querySelectorAll('#rev-filters .rf').forEach(x=>x.classList.toggle('on',x.dataset.f==='all'));
+  renderReviewList();
   show('results');
 }
 function retryWrong(){
   const wrong=S.qs.filter((_,i)=>!S.correct[i]).map(rq=>rq.src);
   if(wrong.length)startSession('practice',shuffle(wrong));
+}
+
+/* ---------- post-exam review with filters ---------- */
+function optText(q,idx){return(q.o_pt||q.o)[idx];}
+function answerSummary(rq,i){
+  const q=rq.src,a=S.answers[i];
+  if(q.t==='s')
+    return {you:(a&&a.sel!=null)?optText(q,a.sel):'(em branco)',cor:optText(q,q.a)};
+  if(q.t==='m')
+    return {you:(a&&a.sel&&a.sel.length)?a.sel.map(x=>optText(q,x)).join('  ·  '):'(em branco)',
+            cor:q.a.map(x=>optText(q,x)).join('  ·  ')};
+  if(q.t==='match'){
+    const pairsLoc=q.pairs_pt||q.pairs,disLoc=q.dis_pt||q.dis;
+    const engAll=q.pairs.map(p=>p.r).concat(q.dis||[]),locAll=pairsLoc.map(p=>p.r).concat(disLoc||[]);
+    const L=v=>{const k=engAll.indexOf(v);return k>=0?locAll[k]:v;};
+    return {you:q.pairs.map((p,ri)=>pairsLoc[ri].l+' → '+((a&&a.slots&&a.slots[ri])?L(a.slots[ri]):'—')).join('  ·  '),
+            cor:q.pairs.map((p,ri)=>pairsLoc[ri].l+' → '+pairsLoc[ri].r).join('  ·  ')};
+  }
+  const itemsLoc=q.items_pt||q.items,catsLoc=q.cats_pt||q.cats;
+  return {you:q.items.map((it,ii)=>itemsLoc[ii].x+' → '+((a&&a.cats&&a.cats[ii]!=null)?catsLoc[a.cats[ii]]:'—')).join('  ·  '),
+          cor:q.items.map((it,ii)=>itemsLoc[ii].x+' → '+catsLoc[it.c]).join('  ·  ')};
+}
+function passFilter(i){
+  if(revFilter==='right')return !!S.correct[i];
+  if(revFilter==='wrong')return !S.correct[i]&&answered(i);
+  if(revFilter==='flag')return !!S.flagged[i];
+  return true;
+}
+function renderReviewList(){
+  const list=$('#r-list'); list.innerHTML=''; let shown=0;
+  S.qs.forEach((rq,i)=>{
+    if(!passFilter(i))return;
+    shown++;
+    const q=rq.src,blank=!answered(i),ok=!!S.correct[i];
+    const d=document.createElement('div');
+    d.className='rev-item '+(blank?'blank':(ok?'ok':'bad'))+(S.flagged[i]?' flagged':'');
+    const qtext=(q.q_pt||q.q).split('\n')[0];
+    const snip=qtext.length>120?qtext.slice(0,120)+'…':qtext;
+    const head=document.createElement('div');head.className='rev-head';
+    head.innerHTML='<span class="led"></span><span class="t"><span class="n">Q'+(i+1)+' · #'+q.n+(S.flagged[i]?' <span class="rev-flag">★</span>':'')+'</span><br>'+esc(snip)+'</span>';
+    d.appendChild(head);
+    const det=document.createElement('div');det.className='rev-detail';
+    const s=answerSummary(rq,i);
+    const you=document.createElement('div');you.className='ans you'+(ok?' ok':'');
+    you.innerHTML='<span class="lab">Sua resposta: </span>'+esc(blank?'(em branco)':s.you);
+    det.appendChild(you);
+    if(!ok){
+      const cor=document.createElement('div');cor.className='ans cor';
+      cor.innerHTML='<span class="lab">Correta: </span>'+esc(s.cor);det.appendChild(cor);
+    }
+    if(q.ex){
+      const ex=document.createElement('div');ex.className='rev-explain';
+      ex.innerHTML='<b>EXPLICAÇÃO · '+(q.topic||'')+'</b>'+q.ex;det.appendChild(ex);
+    }
+    const open=document.createElement('span');open.className='rev-open';open.textContent='abrir questão corrigida →';
+    open.onclick=()=>{S.mode='practice';$('#timer').classList.add('hidden');$('#btn-finish').classList.add('hidden');show('quiz');go(i);};
+    det.appendChild(open);
+    d.appendChild(det);
+    list.appendChild(d);
+  });
+  if(shown===0){const e=document.createElement('div');e.className='bank-desc';e.textContent='Nenhuma questão neste filtro.';list.appendChild(e);}
 }
 
 /* ===================== BANCO DE QUESTÕES ===================== */
@@ -806,7 +945,7 @@ const QUESTIONS = [
 {"n": 95, "t": "s", "q": "When a switch configuration includes a user-defined error threshold on a per-port basis, to which switching method will the switch revert when the error threshold is reached?", "o": ["cut-through", "store-and-forward", "fast-forward", "fragment-free"], "a": 1, "topic": "7.4.2", "ex": "Ao atingir o limiar de erros, a porta cut-through reverte para store-and-forward (que verifica todos os quadros).", "q_pt": "Quando uma configuração de switch inclui um limite de erro definido pelo usuário por porta, para qual método de comutação o switch mudará quando o limite de erro for atingido?", "o_pt": ["cut-through", "store-and-forward", "fast-forward", "fragment-free"]},
 {"n": 96, "t": "classify", "q": "Match a statement to the related network model. (Not all options are used.)", "cats": ["Peer-to-peer NETWORK", "Peer-to-peer APPLICATION"], "items": [{"x": "no dedicated server is required", "c": 0}, {"x": "client and server roles are set on a per request basis", "c": 0}, {"x": "requires a specific user interface", "c": 1}, {"x": "a background service is required", "c": 1}], "topic": "15.2.2", "ex": "Rede P2P: sem servidor dedicado, papéis cliente/servidor por requisição. Aplicação P2P: exige interface de usuário e serviço em segundo plano.", "q_pt": "Os dados estão sendo enviados de um PC de origem para um servidor de destino. Quais três afirmações descrevem corretamente a função do TCP ou UDP nessa situação? (Escolha três.)", "cats_pt": ["REDE ponto a ponto", "APLICAÇÃO ponto a ponto"], "items_pt": [{"x": "nenhum servidor dedicado é necessário", "c": 0}, {"x": "as funções de cliente e servidor são definidas com base em cada solicitação", "c": 0}, {"x": "requer uma interface de usuário específica", "c": 1}, {"x": "um serviço em segundo plano é necessário", "c": 1}]},
 {"n": 97, "t": "m", "choose": 2, "q": "What are two primary responsibilities of the Ethernet MAC sublayer? (Choose two.)", "o": ["error detection", "frame delimiting", "accessing the media", "data encapsulation", "logical addressing"], "a": [2, 3], "topic": "7.1.3", "ex": "Responsabilidades primárias do MAC: encapsulamento de dados (que inclui delimitação, endereçamento e detecção de erros) e acesso à mídia.", "q_pt": "Quais são duas responsabilidades primárias da subcamada MAC (Media Access Control) do Ethernet? (Escolha dois.)", "o_pt": ["Detecção de erros", "Delimitação de frame", "Acessando a mídia", "Encapsulamento de dados", "Endereçamento lógico"]},
-{"n": 98, "t": "m", "choose": 3, "q": "Refer to the exhibit. What three facts can be determined from the viewable output of the show ip interface brief command? (Choose three.)", "img": "imagens_simulado/i274067v1n1_274067.jpg", "img_org": "2016/03/i274067v1n1_274067.jpg", "o": ["Two physical interfaces have been configured.", "The switch can be remotely managed.", "One device is attached to a physical interface.", "Passwords have been configured on the switch.", "Two devices are attached to the switch.", "The default SVI has been configured."], "a": [1, 2, 5], "topic": "17.5.7", "ex": "VLAN1 (SVI padrão) configurada → gerenciamento remoto possível; FastEthernet0/0 up/up → um dispositivo conectado.", "q_pt": "Considere a figura. Quais três fatos podem ser determinados a partir da saída visível do comando show ip interface brief? (Escolha três.)", "o_pt": ["Duas interfaces físicas foram configuradas.", "O switch pode ser gerenciado remotamente.", "Um dispositivo está conectado a uma interface física.", "Senhas foram configuradas no switch.", "Dois dispositivos estão conectados ao switch.", "A SVI padrão foi configurada."]},
+{"n": 98, "t": "m", "choose": 3, "q": "Refer to the exhibit. What three facts can be determined from the viewable output of the show ip interface brief command? (Choose three.)", "img": "imagens_simulado/i274067v1n1_274067.jpg", "img_org": "2016/03/i274067v1n1_274067.jpg", "o": ["Two physical interfaces have been configured.", "The switch can be remotely managed.", "One device is attached to a physical interface.", "Passwords have been configured on the switch.", "Two devices are attached to the switch.", "The default SVI has been configured."], "a": [1, 2, 5], "topic": "17.5.7", "ex": "VLAN1 (SVI padrão) configurada → gerenciamento remoto possível; FastEthernet0/1 up/up → um dispositivo conectado.", "q_pt": "Considere a figura. Quais três fatos podem ser determinados a partir da saída visível do comando show ip interface brief? (Escolha três.)", "o_pt": ["Duas interfaces físicas foram configuradas.", "O switch pode ser gerenciado remotamente.", "Um dispositivo está conectado a uma interface física.", "Senhas foram configuradas no switch.", "Dois dispositivos estão conectados ao switch.", "A SVI padrão foi configurada."]},
 {"n": 99, "t": "match", "q": "Match each type of frame field to its function. (Not all options are used.)", "pairs": [{"l": "This field helps to direct the frame toward its destination.", "r": "addressing"}, {"l": "This field checks if the frame has been damaged during the transfer.", "r": "error detection"}, {"l": "This field is used by the LLC to identify the Layer 3 protocol.", "r": "type"}, {"l": "This field identifies the beginning of a frame.", "r": "frame start"}], "dis": ["flow control"], "topic": "6.3.2", "ex": "Campos do quadro: endereçamento (direção), FCS (detecção de erro), type (protocolo L3 para a LLC) e frame start (início do quadro).", "q_pt": "Associe cada tipo de campo de frame à sua função. (Nem todas as opções são usadas.)", "pairs_pt": [{"l": "Este campo ajuda a direcionar o quadro para o seu destino.", "r": "endereçamento"}, {"l": "Este campo verifica se o quadro foi danificado durante a transferência.", "r": "detecção de erro"}, {"l": "Este campo é usado pela subcamada LLC para identificar o protocolo de Camada 3.", "r": "tipo"}, {"l": "Este campo identifica o início do quadro.", "r": "início do quadro"}], "dis_pt": ["controle de fluxo"]},
 {"n": 100, "t": "s", "q": "What is the subnet ID associated with the IPv6 address 2001:DA48:FC5:A4:3D1B::1/64?", "o": ["2001:DA48::/64", "2001:DA48:FC5::A4:/64", "2001:DA48:FC5:A4::/64", "2001::/64"], "a": 2, "topic": "12.3.6", "ex": "/64 cobre os quatro primeiros hextetos: 2001:DA48:FC5:A4::/64.", "q_pt": "Qual é o ID da sub-rede associado ao endereço IPv6 2001:DA48:FC5:A4:3D1B::1/64?", "o_pt": ["2001:DA48::/64", "2001:DA48:FC5::A4:/64", "2001:DA48:FC5:A4::/64", "2001::/64"]},
 {"n": 101, "t": "match", "q": "Match the firewall function to the type of threat protection it provides to the network. (Not all options are used.)", "pairs": [{"l": "prevents access by port number", "r": "application filtering"}, {"l": "prevents access based on IP or MAC address", "r": "packet filtering"}, {"l": "prevents unsolicited incoming sessions", "r": "stateful packet inspection"}, {"l": "prevents access to websites", "r": "URL filtering"}], "dis": ["proxy filtering"], "topic": "16.3.6", "ex": "Packet filtering = IP/MAC; application filtering = portas; URL filtering = sites; SPI = bloqueia sessões de entrada não solicitadas.", "q_pt": "Associe a função do firewall ao tipo de proteção contra ameaças que ele fornece à rede. (Nem todas as opções são usadas.)", "pairs_pt": [{"l": "impede o acesso pelo número da porta", "r": "filtragem de aplicação"}, {"l": "impede o acesso com base no endereço IP ou MAC", "r": "filtragem de pacotes"}, {"l": "impede sessões de entrada não solicitadas", "r": "inspeção de pacotes com estado (SPI)"}, {"l": "impede o acesso a sites", "r": "filtragem de URL"}], "dis_pt": ["filtragem de proxy"]},
@@ -821,7 +960,7 @@ const QUESTIONS = [
 {"n": 110, "t": "classify", "q": "Match the characteristic to the category. (Not all options are used.)", "cats": ["IP address", "MAC address"], "items": [{"x": "contained in the Layer 3 header", "c": 0}, {"x": "32 or 128 bits", "c": 0}, {"x": "separated into a network portion and a unique identifier", "c": 0}, {"x": "contained in the Layer 2 header", "c": 1}, {"x": "48 bits", "c": 1}, {"x": "separated into OUI and a unique identifier", "c": 1}], "topic": "9.1.1", "ex": "IP: cabeçalho L3, 32 (v4) ou 128 (v6) bits, rede+host. MAC: cabeçalho L2, 48 bits, OUI+identificador único.", "q_pt": "Os dados estão sendo enviados de um PC de origem para um servidor de destino. Quais três afirmações descrevem corretamente a função do TCP ou UDP nessa situação? (Escolha três.)", "cats_pt": ["Endereço IP", "Endereço MAC"], "items_pt": [{"x": "contido no cabeçalho da Camada 3", "c": 0}, {"x": "32 ou 128 bits", "c": 0}, {"x": "dividido em uma parte de rede e um identificador exclusivo", "c": 0}, {"x": "contido no cabeçalho da Camada 2", "c": 1}, {"x": "48 bits", "c": 1}, {"x": "dividido em OUI e um identificador exclusivo", "c": 1}]},
 {"n": 111, "t": "s", "q": "A client packet is received by a server. The packet has a destination port number of 143. What service is the client requesting?", "o": ["IMAP", "FTP", "SSH", "Telnet"], "a": 0, "topic": "14.4.3", "ex": "Porta 143 = IMAP (gerenciamento de e-mail no servidor).", "q_pt": "Um pacote cliente é recebido por um servidor. O pacote tem um número de porta de destino 143. Qual serviço o cliente está solicitando?", "o_pt": ["IMAP", "FTP", "SSH", "Telnet"]},
 {"n": 112, "t": "m", "choose": 2, "q": "What are two characteristics shared by TCP and UDP? (Choose two.)", "o": ["default window size", "connectionless communication", "port numbering", "3-way handshake", "ability to carry digitized voice", "use of checksum"], "a": [2, 5], "topic": "14.1.2", "ex": "Ambos usam números de porta e checksum. Janela e handshake são só do TCP; sem conexão é só UDP.", "q_pt": "Quais são duas características compartilhadas por TCP e UDP? (Escolha dois.)", "o_pt": ["Tamanho da janela padrão", "Comunicação sem conexão", "Numeração de portas", "Handshake de 3 vias", "Capacidade de transportar voz digitalizada", "Uso de checksum"]},
-{"n": 113, "t": "m", "choose": 2, "q": "Refer to the exhibit. Which two network addresses can be assigned to the network containing 10 hosts? Your answers should waste the fewest addresses, not reuse addresses already assigned, and stay within 10.18.10.0/24. (Choose two.)", "img": "imagens_simulado/i274518v1n1_247518.png", "img_org": "2020/01/i274518v1n1_247518.png", "o": ["10.18.10.200/28", "10.18.10.208/28", "10.18.10.240/27", "10.18.10.200/27", "10.18.10.224/27", "10.18.10.224/28"], "a": [1, 5], "topic": "11.7.2", "ex": "10 hosts → /28. 10.18.10.200/28 não é endereço de rede válido. Válidos e livres: 10.18.10.208/28 e 10.18.10.224/28.", "q_pt": "Considere a figura. Quais dois endereços de rede podem ser atribuídos à rede contendo 10 hosts? Suas respostas devem desperdiçar o menor número de endereços, não reutilizar endereços que já foram atribuídos e permanecer na faixa de endereços 10.18.10.0/24. (Escolha dois.)", "o_pt": ["10.18.10.200/28", "10.18.10.208/28", "10.18.10.240/27", "v10.18.10.200/27", "10.18.10.224/27", "10.18.10.224/28"]},
+{"n": 113, "t": "m", "choose": 2, "q": "Refer to the exhibit. Which two network addresses can be assigned to the network containing 10 hosts? Your answers should waste the fewest addresses, not reuse addresses already assigned, and stay within 10.18.10.0/24. (Choose two.)", "img": "imagens_simulado/i274518v1n1_247518.png", "img_org": "2020/01/i274518v1n1_247518.png", "o": ["10.18.10.200/28", "10.18.10.208/28", "10.18.10.240/27", "10.18.10.200/27", "10.18.10.224/27", "10.18.10.224/28"], "a": [1, 5], "topic": "11.7.2", "ex": "10 hosts → /28. 10.18.10.200/28 não é endereço de rede válido. Válidos e livres: 10.18.10.208/28 e 10.18.10.224/28.", "q_pt": "Considere a figura. Quais dois endereços de rede podem ser atribuídos à rede contendo 10 hosts? Suas respostas devem desperdiçar o menor número de endereços, não reutilizar endereços que já foram atribuídos e permanecer na faixa de endereços 10.18.10.0/24. (Escolha dois.)", "o_pt": ["10.18.10.200/28", "10.18.10.208/28", "10.18.10.240/27", "10.18.10.200/27", "10.18.10.224/27", "10.18.10.224/28"]},
 {"n": 114, "t": "s", "q": "A client packet is received by a server. The packet has a destination port number of 21. What service is the client requesting?", "o": ["FTP", "LDAP", "SLP", "SNMP"], "a": 0, "topic": "14.4.3", "ex": "Porta 21 = conexão de controle do FTP (dados na 20).", "q_pt": "Uma organização recebe um bloco de endereços IPv6 de 2001:db8:0:ca00::/56. Quantas sub-redes podem ser criadas sem usar bits no espaço de ID da interface?", "o_pt": ["256", "512", "1024", "4096"]},
 {"n": 115, "t": "s", "q": "What attribute of a NIC would place it at the data link layer of the OSI model?", "o": ["attached Ethernet cable", "IP address", "MAC address", "RJ-45 port", "TCP/IP protocol stack"], "a": 2, "topic": "7.2.2", "ex": "O MAC gravado na NIC é endereçamento de camada 2. Cabo e porta RJ-45 = camada física; IP = camada 3.", "q_pt": "Qual atributo de uma NIC a colocaria na camada de enlace de dados do modelo OSI?", "o_pt": ["Cabo Ethernet conectado", "Endereço IP", "Endereço MAC", "Porta RJ-45", "Pilha de protocolos TCP/IP"]},
 {"n": 116, "t": "s", "q": "A new LAN must support 10 connected devices. What is the smallest network mask that the network administrator can use for the new network?", "o": ["255.255.255.192", "255.255.255.248", "255.255.255.224", "255.255.255.240"], "a": 3, "topic": "11.5.2", "ex": "10 hosts → 4 bits de host (2^4−2 = 14). /28 = 255.255.255.240.", "q_pt": "Um administrador de rede está adicionando uma nova LAN a uma filial. A nova LAN deve suportar 10 dispositivos conectados. Qual é a menor máscara de rede que o administrador de rede pode usar para a nova rede?", "o_pt": ["255.255.255.192", "255.255.255.248", "255.255.255.224", "255.255.255.240"]},
@@ -868,6 +1007,23 @@ const QUESTIONS = [
 {"n": 159, "t": "s", "q": "Users report that network access is slow after an employee downloaded a third-party scanning program for the printer. What type of malware might be introduced that causes slow performance of the network?", "o": ["virus", "worm", "phishing", "spam"], "a": 1, "topic": "16.2.1", "ex": "Worm: autônomo e autorreplicante, propaga-se pela rede consumindo largura de banda — causa lentidão generalizada.", "q_pt": "Os usuários relatam que o acesso à rede está lento. Depois de questionar os funcionários, o administrador de rede soube que um funcionário baixou um programa de digitalização de terceiros para a impressora. Que tipo de malware pode ser introduzido que causa lentidão no desempenho da rede?", "o_pt": ["Vírus", "Worm", "Phishing", "Spam"]},
 ];
 init();
+
+// theme toggle
+(function(){
+  const btn=$('#btn-theme');
+  function apply(dark){
+    document.documentElement.dataset.theme=dark?'dark':'';
+    btn.textContent=dark?'☀️':'🌙';
+  }
+  const stored=localStorage.getItem('theme');
+  const dark=stored?stored==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;
+  apply(dark);
+  btn.onclick=function(){
+    const isDark=document.documentElement.dataset.theme==='dark';
+    localStorage.setItem('theme',isDark?'light':'dark');
+    apply(!isDark);
+  };
+})();
 </script>
 </body>
 </html>
