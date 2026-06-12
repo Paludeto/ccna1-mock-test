@@ -753,6 +753,8 @@ function startSession(mode,fixedSet,preGrade){
   $('#timer').classList.toggle('hidden',mode!=='exam');
   $('#btn-finish').classList.toggle('hidden',mode!=='exam');
   if(mode==='exam') startTimer(100*60); else stopTimer();
+  $('#btn-prev').onclick=()=>go(S.idx-1);
+  $('#btn-next').onclick=()=>go(S.idx+1);
   buildPanel();
   show('quiz');
   go(0);
