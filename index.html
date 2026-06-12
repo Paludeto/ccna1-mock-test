@@ -136,6 +136,23 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .flagbtn:hover{border-color:var(--amber)}
 .flagbtn.on{border-color:var(--amber);background:var(--amber-soft);color:var(--amber)}
 .port.flag::before{content:'';position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:2px;background:var(--amber);box-shadow:0 0 0 1.5px var(--card);z-index:1}
+.btn-sync {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--muted);
+  transition: color 0.15s, background-color 0.15s, transform 0.1s;
+}
+.btn-sync:hover {
+  color: var(--ink);
+  background-color: var(--bg);
+}
+.btn-sync:active {
+  transform: scale(0.92);
+}
 /* ---- error bank ---- */
 .bank-desc{color:var(--muted);font-size:14px;margin:8px 0 0}
 .bank-desc b{color:var(--ink);font-family:var(--mono)}
@@ -223,7 +240,10 @@ footer a{color:var(--muted)}
       </div>
     </div>
     <div class="card" id="bank-card">
-      <div class="qnum">BANCO DE ERROS</div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="qnum">BANCO DE ERROS</div>
+        <button class="btn-sync" id="btn-sync-bank" title="Recarregar do localStorage">🔄</button>
+      </div>
       <p class="bank-desc" id="bank-desc"></p>
       <div class="btnbar">
         <button class="btn primary" id="btn-study-bank">Estudar erros</button>
@@ -231,7 +251,10 @@ footer a{color:var(--muted)}
       </div>
     </div>
     <div class="card" id="mastered-card">
-      <div class="qnum">QUESTÕES DOMINADAS</div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="qnum">QUESTÕES DOMINADAS</div>
+        <button class="btn-sync" id="btn-sync-mastered" title="Recarregar do localStorage">🔄</button>
+      </div>
       <p class="bank-desc" id="mastered-desc"></p>
       <div class="btnbar">
         <button class="btn ghost" id="btn-study-mastered">Revisar dominadas</button>
@@ -373,7 +396,8 @@ const T = {
     confirmAbandon: "Deseja mesmo abandonar? Todo o progresso será perdido.",
     confirmClearBank: "Esvaziar o banco de erros? Esta ação não pode ser desfeita.",
     confirmResetMastered: "Resetar todas as questões dominadas? O banco de erros não é afetado.",
-    confirmSubmitBlank: "{n} questão(ões) em branco. Entregar mesmo assim?"
+    confirmSubmitBlank: "{n} questão(ões) em branco. Entregar mesmo assim?",
+    syncTooltip: "Recarregar dados do localStorage"
   },
   en: {
     title: "Exam — ITNv7 Final Exam",
@@ -432,7 +456,8 @@ const T = {
     confirmAbandon: "Do you really want to quit? All progress will be lost.",
     confirmClearBank: "Empty the error bank? This action cannot be undone.",
     confirmResetMastered: "Reset all mastered questions? The error bank is not affected.",
-    confirmSubmitBlank: "{n} blank question(s). Submit anyway?"
+    confirmSubmitBlank: "{n} blank question(s). Submit anyway?",
+    syncTooltip: "Reload data from localStorage"
   }
 };
 
@@ -446,9 +471,11 @@ function updateUIStrings() {
   $('#lbl-questions').textContent = T[lang].questionsLbl;
   $('#btn-start').textContent = (selMode === 'exam') ? T[lang].startExam : T[lang].startPractice;
   $('#bank-card .qnum').textContent = T[lang].errBankTitle;
+  $('#btn-sync-bank').title = T[lang].syncTooltip;
   $('#btn-study-bank').textContent = T[lang].studyErr;
   $('#btn-clear-bank').textContent = T[lang].clearErr;
   $('#mastered-card .qnum').textContent = T[lang].masteredTitle;
+  $('#btn-sync-mastered').title = T[lang].syncTooltip;
   $('#btn-study-mastered').textContent = T[lang].revMastered;
   $('#btn-reset-mastered').textContent = T[lang].resetMastered;
   $('#btn-home').textContent = T[lang].homeBtn;
@@ -484,6 +511,7 @@ function bankDeck(){return Object.keys(loadBank()).map(n=>QBY_N[n]).filter(Boole
 function updateProgressFromSession(){
   const b=loadBank(), m=loadMastered();
   S.qs.forEach((rq,i)=>{
+    if(S.saved && S.saved[i]) return;
     const n=String(rq.src.n);
     if(!answered(i)&&S.mode!=='exam') return;
     if(S.correct[i]){
@@ -493,8 +521,26 @@ function updateProgressFromSession(){
       b[n]=0;
       delete m[n];
     }
+    if(S.saved) S.saved[i]=true;
   });
   saveBank(b);saveMastered(m);
+}
+
+function updateProgressForQuestion(i){
+  if(S.mode==='exam') return;
+  if(S.saved && S.saved[i]) return;
+  const rq=S.qs[i];
+  const n=String(rq.src.n);
+  const b=loadBank(), m=loadMastered();
+  if(S.correct[i]){
+    if(n in b){b[n]=(b[n]||0)+1;if(b[n]>=2)delete b[n];}
+    m[n]=1;
+  }else{
+    b[n]=0;
+    delete m[n];
+  }
+  saveBank(b);saveMastered(m);
+  if(S.saved) S.saved[i]=true;
 }
 
 function init(){
@@ -525,6 +571,22 @@ function init(){
       renderReviewList();
     };
   });
+  $('#btn-sync-bank').onclick=()=>{
+    renderBankCard();
+    updateCountLabel();
+  };
+  $('#btn-sync-mastered').onclick=()=>{
+    renderMasteredCard();
+    updateCountLabel();
+  };
+  window.addEventListener('storage', (e)=>{
+    if(e.key===BANK_KEY || e.key===MASTERED_KEY){
+      renderBankCard();
+      renderMasteredCard();
+      updateCountLabel();
+    }
+  });
+
   selectMode('practice');
   renderBankCard();
   renderMasteredCard();
@@ -652,11 +714,13 @@ function startSession(mode,fixedSet,preGrade){
   const answers=new Array(qs.length).fill(null);
   const checked=new Array(qs.length).fill(false);
   const correct=new Array(qs.length).fill(null);
+  const saved=new Array(qs.length).fill(false);
   if(preGrade){
     qs.forEach((q,i)=>{
       answers[i]=getCorrectAnswer(q);
       checked[i]=true;
       correct[i]=true;
+      saved[i]=true;
     });
   }
   S={mode,qs:qs.map(q=>buildRuntimeQ(q)),idx:0,
@@ -664,6 +728,7 @@ function startSession(mode,fixedSet,preGrade){
      checked:checked,
      correct:correct,
      flagged:new Array(qs.length).fill(false),
+     saved:saved,
      startedAt:Date.now()};
   $('#q-total').textContent=qs.length;
   $('#timer').classList.toggle('hidden',mode!=='exam');
@@ -969,6 +1034,7 @@ function checkCurrent(){
   ensureAns(S.qs[S.idx]);
   S.checked[S.idx]=true;
   S.correct[S.idx]=grade(S.idx);
+  updateProgressForQuestion(S.idx);
   renderQ();refreshPanel();
   const last=S.idx===S.qs.length-1;
   if(S.mode==='practice'&&last){$('#btn-next').onclick=()=>finish(false);}
@@ -1120,7 +1186,7 @@ const QUESTIONS = [
     {"n": 36, "t": "m", "choose": 2, "q": "Which two protocols operate at the top layer of the TCP/IP protocol suite? (Choose two.)", "o": ["TCP", "IP", "UDP", "POP", "DNS", "Ethernet"], "a": [3, 4], "topic": "3.3.4", "ex": "A camada superior é a de aplicação: POP e DNS. TCP/UDP = transporte; IP = internet; Ethernet = acesso à rede.", "q_pt": "Quais dois protocolos operam na camada superior do conjunto de protocolos TCP/IP? (Escolha dois.)", "o_pt": ["TCP", "IP", "UDP", "POP", "DNS", "Ethernet"]},
     {"n": 37, "t": "s", "q": "A network security policy assigns Read-Only rights on a Public folder to anyone who can log into the server, while Edit rights are assigned only to the network admin group. Which component is addressed in the AAA network service framework?", "o": ["automation", "accounting", "authentication", "authorization"], "a": 3, "topic": "16.3.4", "ex": "Autorização define O QUE o usuário pode acessar/fazer após autenticar-se. Autenticação = quem você é; accounting = registro do que fez.", "q_pt": "Uma empresa tem um servidor de arquivos que compartilha uma pasta chamada Público. A política de segurança de rede especifica que a pasta Público recebe direitos de \"Somente Leitura\" para qualquer pessoa que possa fazer login no servidor, enquanto os direitos de \"Editar\" são atribuídos apenas ao grupo de administradores de rede. Qual componente é abordado na estrutura de serviço de rede AAA?", "o_pt": ["Automação", "Contabilidade", "Autenticação", "Autorização"]},
     {"n": 38, "t": "m", "choose": 3, "q": "What three requirements are defined by the protocols used in network communications to allow message transmission across a network? (Choose three.)", "o": ["message size", "message encoding", "connector specifications", "media selection", "delivery options", "end-device installation"], "a": [0, 1, 4], "topic": "3.1.5", "ex": "Protocolos definem codificação, tamanho/segmentação, opções de entrega (unicast/multicast/broadcast), formatação e temporização — não conectores ou mídia física.", "q_pt": "Quais três requisitos são definidos pelos protocolos usados ​​nas comunicações de rede para permitir a transmissão de mensagens por meio de uma rede? (Escolha três.)", "o_pt": ["Tamanho da mensagem", "Codificação de mensagem", "Especificações do conector", "Seleção da mídia", "Opções de entrega", "Instalação do dispositivo final"]},
-    {"n": 39, "t": "m", "choose": 2, "q": "What are two characteristics of IP? (Choose two.)", "o": ["does not require a dedicated end-to-end connection", "operates independently of the network media", "retransmits packets if errors occur", "re-assembles out of order packets into the correct order at the receiver end", "guarantees delivery of packets"], "a": [0, 1], "topic": "8.1.3", "ex": "IP é sem conexão, best-effort (não garante entrega nem retransmite) e independente da mídia. Reordenação/retransmissão são funções do TCP.", "q_pt": "Quais são duas características do IP? (Escolha duas.)", "o_pt": ["não requer uma conexão de ponta a ponta dedicada", "reordena pacotes fora de ordem no destino", "opera de forma independente do meio de rede", "garante a entrega dos dados", "retransmite os dados caso pacotes sejam perdidos"]},
+    {"n": 39, "t": "m", "choose": 2, "q": "What are two characteristics of IP? (Choose two.)", "o": ["does not require a dedicated end-to-end connection", "operates independently of the network media", "retransmits packets if errors occur", "re-assembles out of order packets into the correct order at the receiver end", "guarantees delivery of packets"], "a": [0, 1], "topic": "8.1.3", "ex": "IP é sem conexão, best-effort (não garante entrega nem retransmite) e independente da mídia. Reordenação/retransmissão são funções do TCP.", "q_pt": "Quais são duas características do IP? (Escolha duas.)", "o_pt": ["não requer uma conexão de ponta a ponta dedicada", "opera de forma independente do meio de rede", "retransmite os dados caso pacotes sejam perdidos", "reordena pacotes fora de ordem no destino", "garante a entrega dos dados"]},
     {"n": 40, "t": "m", "choose": 3, "q": "An employee logs in remotely with username and password and attends a video conference that demands excellent quality. During the meeting the primary ISP connection fails, but a secondary connection activates within seconds without anyone noticing. What three network characteristics are described? (Choose three.)", "o": ["security", "quality of service", "scalability", "powerline networking", "integrity", "fault tolerance"], "a": [0, 1, 5], "topic": "1.6.1", "ex": "Usuário/senha → segurança; qualidade de vídeo → QoS; failover transparente do link → tolerância a falhas.", "q_pt": "Um funcionário de uma grande corporação faz login remotamente na empresa usando o nome de usuário e senha apropriados. O funcionário está participando de uma importante videoconferência com um cliente sobre uma grande venda. É importante que a qualidade do vídeo seja excelente durante a reunião. O funcionário não sabe que, após um login bem-sucedido, a conexão com o ISP da empresa falhou. A conexão secundária, no entanto, ativada em segundos. A interrupção não foi notada pelo funcionário ou outros funcionários.Quais três características de rede são descritas neste cenário? (Escolha três.)", "o_pt": ["Segurança", "Qualidade de serviço", "Escalabilidade", "Rede elétrica", "Integridade", "Tolerância a falhas"]},
     {"n": 41, "t": "m", "choose": 2, "q": "What are two common causes of signal degradation when using UTP cabling? (Choose two.)", "o": ["improper termination", "low-quality shielding in cable", "installing cables in conduit", "low-quality cable or connectors", "loss of light over long distances"], "a": [0, 3], "topic": "4.4.2", "ex": "Terminação malfeita e cabos/conectores de baixa qualidade degradam o sinal. UTP não tem blindagem nem usa luz.", "q_pt": "Quais são duas causas comuns de degradação do sinal ao usar cabeamento UTP? (Escolha dois.)", "o_pt": ["Terminação inadequada", "Blindagem de baixa qualidade no cabo", "Instalação de cabos em conduíte", "Cabo ou conectores de baixa qualidade", "Perda de luz em longas distâncias"]},
     {"n": 42, "t": "s", "q": "Which subnet would include the address 192.168.1.96 as a usable host address?", "o": ["192.168.1.64/26", "192.168.1.32/27", "192.168.1.32/28", "192.168.1.64/29"], "a": 0, "topic": "11.5.2", "ex": "192.168.1.64/26 → hosts de .65 a .126, que inclui .96. Os demais intervalos não alcançam .96 como host válido.", "q_pt": "Qual sub-rede incluiria o endereço 192.168.1.96 como um endereço de host utilizável?", "o_pt": ["192.168.1.64/26", "192.168.1.32/27", "192.168.1.32/28", "192.168.1.64/29"]},
