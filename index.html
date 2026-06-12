@@ -135,6 +135,8 @@ h1{font-family:var(--disp);font-size:22px;margin:0;line-height:1.2}
 .flagbtn{font-family:var(--mono);font-size:12px;font-weight:600;padding:6px 11px;border-radius:7px;border:1.5px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap}
 .flagbtn:hover{border-color:var(--amber)}
 .flagbtn.on{border-color:var(--amber);background:var(--amber-soft);color:var(--amber)}
+#btn-discard-err{border-color:var(--down);color:var(--down)}
+#btn-discard-err:hover{border-color:var(--down);background:var(--down-soft);color:var(--down)}
 .port.flag::before{content:'';position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:2px;background:var(--amber);box-shadow:0 0 0 1.5px var(--card);z-index:1}
 .btn-sync {
   background: none;
@@ -269,6 +271,7 @@ footer a{color:var(--muted)}
       <div class="qhead">
         <span class="qnum">QUESTÃO <b id="q-pos"></b> / <span id="q-total"></span> · <span id="q-orig"></span></span>
         <div class="qhead-right">
+          <button class="flagbtn hidden" id="btn-discard-err">🗑 <span id="discard-err-lbl">Descartar</span></button>
           <button class="flagbtn" id="btn-flag">☆ <span id="flag-lbl">Marcar</span></button>
           <span class="timer hidden" id="timer">100:00</span>
         </div>
@@ -397,7 +400,8 @@ const T = {
     confirmClearBank: "Esvaziar o banco de erros? Esta ação não pode ser desfeita.",
     confirmResetMastered: "Resetar todas as questões dominadas? O banco de erros não é afetado.",
     confirmSubmitBlank: "{n} questão(ões) em branco. Entregar mesmo assim?",
-    syncTooltip: "Recarregar dados do localStorage"
+    syncTooltip: "Recarregar dados do localStorage",
+    discardErr: "Descartar"
   },
   en: {
     title: "Exam — ITNv7 Final Exam",
@@ -457,7 +461,8 @@ const T = {
     confirmClearBank: "Empty the error bank? This action cannot be undone.",
     confirmResetMastered: "Reset all mastered questions? The error bank is not affected.",
     confirmSubmitBlank: "{n} blank question(s). Submit anyway?",
-    syncTooltip: "Reload data from localStorage"
+    syncTooltip: "Reload data from localStorage",
+    discardErr: "Discard"
   }
 };
 
@@ -478,6 +483,7 @@ function updateUIStrings() {
   $('#btn-sync-mastered').title = T[lang].syncTooltip;
   $('#btn-study-mastered').textContent = T[lang].revMastered;
   $('#btn-reset-mastered').textContent = T[lang].resetMastered;
+  $('#discard-err-lbl').textContent = T[lang].discardErr;
   $('#btn-home').textContent = T[lang].homeBtn;
   $('#btn-prev').textContent = T[lang].prevBtn;
   $('#btn-check').textContent = T[lang].checkBtn;
@@ -515,7 +521,6 @@ function updateProgressFromSession(){
     const n=String(rq.src.n);
     if(!answered(i)&&S.mode!=='exam') return;
     if(S.correct[i]){
-      if(n in b){b[n]=(b[n]||0)+1;if(b[n]>=2)delete b[n];}
       m[n]=1;
     }else{
       b[n]=0;
@@ -533,7 +538,6 @@ function updateProgressForQuestion(i){
   const n=String(rq.src.n);
   const b=loadBank(), m=loadMastered();
   if(S.correct[i]){
-    if(n in b){b[n]=(b[n]||0)+1;if(b[n]>=2)delete b[n];}
     m[n]=1;
   }else{
     b[n]=0;
@@ -586,6 +590,21 @@ function init(){
       updateCountLabel();
     }
   });
+
+  $('#btn-discard-err').onclick=()=>{
+    if(!S) return;
+    const rq=S.qs[S.idx];
+    const q=rq.src;
+    const n=String(q.n);
+    const b=loadBank();
+    if(n in b){
+      delete b[n];
+      saveBank(b);
+      renderQ();
+      renderBankCard();
+      updateCountLabel();
+    }
+  };
 
   selectMode('practice');
   renderBankCard();
@@ -794,8 +813,14 @@ function toggleFlag(){
 function renderBankCard(){
   const n=bankDeck().length;
   const desc=$('#bank-desc');
-  if(n===0){desc.textContent=lang==='pt'?'Nenhum erro registrado. Questões erradas aparecem aqui para revisão dirigida.':'No errors recorded. Wrong questions appear here for targeted review.';$('#btn-study-bank').disabled=true;}
-  else{desc.innerHTML=lang==='pt'?'Você tem <b>'+n+'</b> questão(ões) pendente(s). Acerte 2 vezes seguidas para remover.':'You have <b>'+n+'</b> pending question(s). Answer correctly twice in a row to remove.';$('#btn-study-bank').disabled=false;}
+  if(n===0){
+    desc.textContent=lang==='pt'?'Nenhum erro registrado. Questões erradas aparecem aqui para revisão dirigida.':'No errors recorded. Wrong questions appear here for targeted review.';
+    $('#btn-study-bank').disabled=true;
+  }
+  else{
+    desc.innerHTML=lang==='pt'?'Você tem <b>'+n+'</b> questão(ões) no banco. Remova-as clicando em "Descartar" durante a prática.':'You have <b>'+n+'</b> question(s) in the bank. Remove them by clicking "Discard" during practice.';
+    $('#btn-study-bank').disabled=false;
+  }
 }
 function studyBank(){
   const deck=bankDeck();
@@ -850,6 +875,8 @@ function renderQ(){
   $('#q-orig').textContent='#'+q.n;
   $('#btn-flag').classList.toggle('on',!!S.flagged[S.idx]);
   $('#flag-lbl').textContent=S.flagged[S.idx] ? T[lang].flaggedLbl : T[lang].flagLbl;
+  const inErrBank = String(q.n) in loadBank();
+  $('#btn-discard-err').classList.toggle('hidden', !inErrBank);
   $('#prog').style.width=((S.idx+1)/S.qs.length*100)+'%';
   $('#btn-prev').disabled=S.idx===0;
   const last=S.idx===S.qs.length-1;
