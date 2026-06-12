@@ -836,7 +836,7 @@ function clearBank(){
 const MASTERED_KEY='ccna1_mastered';
 function loadMastered(){try{const v=JSON.parse(localStorage.getItem(MASTERED_KEY));return(v&&typeof v==='object')?v:{};}catch(e){return{};}}
 function saveMastered(m){try{localStorage.setItem(MASTERED_KEY,JSON.stringify(m));}catch(e){}}
-function masteredCount(){return Object.keys(loadMastered()).length;}
+function masteredCount(){return masteredDeck().length;}
 function masteredDeck(){return Object.keys(loadMastered()).map(n=>QBY_N[n]).filter(Boolean);}
 
 function renderMasteredCard(){
