@@ -629,7 +629,15 @@ function filterUniqueQuestions(questionsList, limit){
   return result;
 }
 
-function startSession(mode,fixedSet){
+function getCorrectAnswer(q){
+  if(q.t==='s') return {sel: q.a};
+  if(q.t==='m') return {sel: Array.isArray(q.a) ? [...q.a] : [q.a]};
+  if(q.t==='match') return {slots: q.pairs.map(p=>p.r)};
+  if(q.t==='classify') return {cats: q.items.map(it=>it.c)};
+  return null;
+}
+
+function startSession(mode,fixedSet,preGrade){
   let qs;
   if(fixedSet){
     qs=shuffle(fixedSet);
@@ -641,10 +649,20 @@ function startSession(mode,fixedSet){
     const count=Math.min(parseInt($('#opt-count').value)||avail.length,avail.length);
     qs=filterUniqueQuestions(shuffle(avail), Math.max(1,count));
   }
+  const answers=new Array(qs.length).fill(null);
+  const checked=new Array(qs.length).fill(false);
+  const correct=new Array(qs.length).fill(null);
+  if(preGrade){
+    qs.forEach((q,i)=>{
+      answers[i]=getCorrectAnswer(q);
+      checked[i]=true;
+      correct[i]=true;
+    });
+  }
   S={mode,qs:qs.map(q=>buildRuntimeQ(q)),idx:0,
-     answers:new Array(qs.length).fill(null),
-     checked:new Array(qs.length).fill(false),
-     correct:new Array(qs.length).fill(null),
+     answers:answers,
+     checked:checked,
+     correct:correct,
      flagged:new Array(qs.length).fill(false),
      startedAt:Date.now()};
   $('#q-total').textContent=qs.length;
@@ -744,7 +762,7 @@ function renderMasteredCard(){
 }
 function studyMastered(){
   const deck=masteredDeck();
-  if(deck.length) startSession('practice',shuffle(deck));
+  if(deck.length) startSession('practice',shuffle(deck),true);
 }
 function resetMasteredConfirm(){
   if(confirm(T[lang].confirmResetMastered)){
