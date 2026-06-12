@@ -599,17 +599,47 @@ function buildRuntimeQ(q){
   return r;
 }
 
+function getNormText(q){
+  const norm = (text) => {
+    if(!text) return "";
+    return text.toLowerCase()
+               .replace(/\[.*?\]/g, "")
+               .replace(/\b(caso|case)\s+\d+[:\s]*/gi, "")
+               .replace(/\b(outro caso|other case)[:\s]*/gi, "")
+               .replace(/[^\w\s]/g, "")
+               .replace(/\s+/g, " ")
+               .trim();
+  };
+  return norm(q.q) + "|" + norm(q.q_pt);
+}
+
+function filterUniqueQuestions(questionsList, limit){
+  const seen = new Set();
+  const result = [];
+  for (const q of questionsList) {
+    const norm = getNormText(q);
+    if (!seen.has(norm)) {
+      seen.add(norm);
+      result.push(q);
+      if (limit && result.length >= limit) {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
 function startSession(mode,fixedSet){
   let qs;
   if(fixedSet){
     qs=shuffle(fixedSet);
   }else if(mode==='exam'){
-    qs=shuffle(QUESTIONS.slice()).slice(0,120);
+    qs=filterUniqueQuestions(shuffle(QUESTIONS.slice()), 120);
   }else{
     const m=loadMastered();
     const avail=QUESTIONS.filter(q=>!m[q.n]);
     const count=Math.min(parseInt($('#opt-count').value)||avail.length,avail.length);
-    qs=shuffle(avail).slice(0,Math.max(1,count));
+    qs=filterUniqueQuestions(shuffle(avail), Math.max(1,count));
   }
   S={mode,qs:qs.map(q=>buildRuntimeQ(q)),idx:0,
      answers:new Array(qs.length).fill(null),
